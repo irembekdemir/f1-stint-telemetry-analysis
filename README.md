@@ -70,3 +70,7 @@ Generated charts are saved under `./outputs/` (and tracked in `./assets/` for do
 
 - **Constructor & Driver Fixed Effects:** Residual variance (`std = 0.839s`) largely reflects pace differences across teams and drivers; incorporating team/driver encodings or fuel-corrected lap times would further reduce unexplained variance.
 - **Multi-Race Generalization:** Extending evaluation across multiple circuits and weather regimes to test how tyre degradation rates generalize across varying track abrasiveness levels.
+
+## Disclaimer
+
+This project is an independent, non-commercial portfolio analysis. Timing and weather data are retrieved locally via the open-source `FastF1` library for educational and analytical purposes. Formula 1 and related marks are trademarks of Formula One Licensing B.V.
