@@ -19,12 +19,13 @@ def generate_portfolio_plots(
 
     plt.rcParams.update({"figure.dpi": 150, "axes.spines.top": False, "axes.spines.right": False})
 
+    # 1. Lap time distribution by tyre compound
     fig, ax = plt.subplots(figsize=(8, 4.5))
     order = [c for c in ["SOFT", "MEDIUM", "HARD"] if c in clean_df["Compound"].unique()]
     data_by_compound = [
         clean_df.loc[clean_df["Compound"] == c, "lap_time_sec"].dropna() for c in order
     ]
-    ax.boxplot(data_by_compound, labels=order, patch_artist=True)
+    ax.boxplot(data_by_compound, tick_labels=order, patch_artist=True)
     ax.set_title(f"{title_prefix}: Clean Lap Time Distribution by Tyre Compound")
     ax.set_xlabel("Tyre Compound")
     ax.set_ylabel("Lap Time (seconds)")
@@ -35,6 +36,7 @@ def generate_portfolio_plots(
     plt.close(fig)
     saved_files.append(p1)
 
+    # 2. Mean lap time vs tyre age
     fig, ax = plt.subplots(figsize=(8, 4.5))
     stint_summary = (
         clean_df[clean_df["Compound"].isin(order)]
@@ -59,6 +61,7 @@ def generate_portfolio_plots(
     plt.close(fig)
     saved_files.append(p2)
 
+    # 3. Residual diagnostic plot
     fig, ax = plt.subplots(figsize=(8, 4.5))
     ax.scatter(eval_res.y_pred, eval_res.residuals, alpha=0.55, s=22)
     ax.axhline(0.0, linestyle="--", linewidth=1.2)

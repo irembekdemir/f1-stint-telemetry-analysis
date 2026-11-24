@@ -16,7 +16,7 @@ def load_clean_session_laps(
     """Load F1 session laps merged with weather data and filter pit/SC outliers."""
     Path(cache_dir).mkdir(parents=True, exist_ok=True)
     os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
-    fastf1.Cache.enable_cache(cache_dir)
+    fastf1.Cache.configure(cache_dir=cache_dir)
 
     session = fastf1.get_session(year, grand_prix, session_type)
     session.load(telemetry=False, weather=True, messages=False)
@@ -36,7 +36,6 @@ def load_clean_session_laps(
         direction="nearest",
     )
 
-    # Pit giris/cikis turlarini, eksik degerleri ve hatali zamanlari cikar
     base_filtered = merged[
         merged["PitInTime"].isna()
         & merged["PitOutTime"].isna()
@@ -47,7 +46,6 @@ def load_clean_session_laps(
         & merged["TrackTemp"].notna()
     ].copy()
 
-    # Guvenlik araci (SC/VSC), trafik veya olay nedeniyle asiri uzayan turlari ayikla
     median_lap = base_filtered["lap_time_sec"].median()
     clean_laps = base_filtered[
         base_filtered["lap_time_sec"] <= median_lap * max_lap_ratio

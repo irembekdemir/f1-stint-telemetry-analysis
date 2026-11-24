@@ -26,7 +26,18 @@ def main() -> None:
     print(f"=== {args.year} {args.gp} ({args.session}) Summary ===")
     print(f"Raw laps: {len(raw_laps)} | Clean green-flag non-pit laps: {len(clean_laps)}")
 
-    comp_res = compare_two_compounds(clean_laps, group_a="SOFT", group_b="MEDIUM")
+    top_compounds = (
+        clean_laps[clean_laps["Compound"].isin(["SOFT", "MEDIUM", "HARD"])]["Compound"]
+        .value_counts()
+        .index.tolist()
+    )
+
+    if len(top_compounds) >= 2:
+        comp_a, comp_b = top_compounds[0], top_compounds[1]
+        comp_res = compare_two_compounds(clean_laps, group_a=comp_a, group_b=comp_b)
+    else:
+        comp_res = None
+
     if comp_res is not None:
         print(
             f"\n[Inference] {comp_res.group_a} (n={comp_res.n_a}, mean={comp_res.mean_a:.3f}s) vs "
@@ -38,7 +49,7 @@ def main() -> None:
             f"Permutation p-value: {comp_res.p_value:.4f}"
         )
     else:
-        print("\n[Inference] Not enough laps for SOFT vs MEDIUM comparison in this session.")
+        print("\n[Inference] Not enough laps across two compounds in this session.")
 
     model_res = train_and_evaluate_lap_model(clean_laps)
     print("\n[Modeling] Lap Time Prediction")
